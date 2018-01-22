@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>RealTalk</title>
+    <script src="peer.js"></script>
+    <script language="javascript" type="text/javascript">
+
+		// gave them each an ID from 1-100
+		var PEER_ID = Math.floor((Math.random() * 100));
+        //
+        window.addEventListener("load", function(){
+            initPeer(function(message, peerId){
+				var peermsg = document.getElementById(peerId);
+                var newText = document.createTextNode(message);
+                peermsg.appendChild(newText);
+            });
+
+			// Finds the selected addressee to send message to
+			var findpeer = function() {
+				var radio = document.getElementsByName('peer');
+				for (var i = 0, l = radio.length ; i < l ; i++) {
+					if (radio[i].checked) {
+						return radio[i].value;
+					}
+				}
+			}
+            // the message box with the list and added an exception handling
+			document.getElementById('title').innerHTML = 'Peer: ' + PEER_ID +'';
+            document.getElementById('send').onclick= function(){
+                var message = document.getElementById('message').value;
+				var peers = findpeer();
+				if (peers) {
+					try {
+						channels[findpeer()].send(message);
+					} catch (e) {
+						console.log(e);
+					}
+				} else {
+					console.warn("peer undefined");
+				}
+            };
+        }, false);
+    </script>
+</head>
+<body>
+    <h2 id="title"></h2>
+    <textarea id="message" cols="50" rows="10" ></textarea>
+	<div><button id="send">Send message</button></div>
+	<form id="peers">
+	</form>
+</body>
+</html>
